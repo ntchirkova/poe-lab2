@@ -17,6 +17,10 @@ byte btn_state = LOW;
 
 String result="";
 
+void getDistance(value) {
+  return 723.2 *exp(value*-0.6109);
+}
+
 void setup() {
   //Setup input and outputs: LEDs out, pushbutton in.
   pinMode(PUSH_BUTTON, INPUT);
@@ -26,6 +30,7 @@ void setup() {
 void loop() {
   byte btn_state = digitalRead(PUSH_BUTTON);
   pot_value = analogRead(POT);
+  dist = getDistance(pot_value);
 
   if(Serial.available() > 0) {
     cmd_id = Serial.read();
@@ -35,7 +40,7 @@ void loop() {
   
   switch(cmd_id){
     case CMD_READ_POT:
-      result = result + "Potentiometer reads: " + pot_value;
+      result = result + "Potentiometer reads: " + pot_value + ", " + dist;
       Serial.println(result);
       result = "";
       break;
