@@ -5,13 +5,6 @@ from mpl_toolkits.mplot3d import Axes3D
 from serial import Serial, SerialException
 import math
 
-# The Serial constructor will take a different first argument on
-# Windows. The first argument on Windows will likely be of the form
-# 'COMX' where 'X' is a number like 3,4,5 etc.
-# Eg.cxn = Serial('COM5', baudrate=9600
-#
-# NOTE: You won't be able to program your Arduino or run the Serial
-# Monitor while the Python script is running.
 cxn = Serial('/dev/cu.usbmodem1411', baudrate=9600)
 
 fig = plt.figure()
@@ -47,8 +40,6 @@ while(True):
             for i in range(0, 900):
                 reading = cxn.readline();
                 print(reading)
-                #reading = reading.decode();
-                #print(reading)
                 readings.append(reading)
             break
     except ValueError:
