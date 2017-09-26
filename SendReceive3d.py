@@ -1,6 +1,7 @@
 #!/usr/local/bin/python
 
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 from serial import Serial, SerialException
 import math
 
@@ -12,6 +13,9 @@ import math
 # NOTE: You won't be able to program your Arduino or run the Serial
 # Monitor while the Python script is running.
 cxn = Serial('/dev/cu.usbmodem1411', baudrate=9600)
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
 
 ver_pos = []
 hor_pos = []
@@ -40,7 +44,7 @@ while(True):
             cxn.write([int(cmd_id)])
             while cxn.inWaiting() < 1:
                 pass
-            for i in range(0, 90):
+            for i in range(0, 900):
                 reading = cxn.readline();
                 print(reading)
                 #reading = reading.decode();
@@ -56,15 +60,22 @@ for reading in readings:
     ver = get_ver_pos(reading)
     hor = get_hor_pos(reading)
     distance = get_dist(reading)
-    ver_pos.append(ver)
+    ver_pos.append(math.radians(ver))
     hor_pos.append(math.radians(hor))
     dist.append(distance)
 x = []
 y = []
+z = []
 for i in range(0, len(dist)-1):
     if (dist[i] >= 12 and dist[i] <= 36):
-        x.append(dist[i]*math.cos(hor_pos[i]))
-        y.append(dist[i]*math.sin(hor_pos[i]))
+        x.append(dist[i]*math.cos(ver_pos[i])*math.cos(hor_pos[i]))
+        y.append(dist[i]*math.cos(ver_pos[i])*math.sin(hor_pos[i]))
+        z.append(dist[i]*math.sin(ver_pos[i]))
 print(x)
-plt.scatter(x, y)
+
+plt.scatter(x, y, z)
+ax.set_xlabel('X Label')
+ax.set_ylabel('Y Label')
+ax.set_zlabel('Z Label')
+
 plt.show()

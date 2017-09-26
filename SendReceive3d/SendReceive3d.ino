@@ -22,7 +22,8 @@ byte btn_state = LOW;
 String result="";
  
 float getDistance(int v) {
-  return 64.46 -.2768*v + .0003689*pow(v,2);
+  return 127.7*exp(-.01934*v)+37.48*exp(-.003001*v);
+  //return 64.46 -.2768*v + .0003689*pow(v,2);
 }
  
 void setup() {
@@ -46,15 +47,18 @@ void loop() {
   
   switch(cmd_id){
     case CMD_READ_POT:
-      for(int horPos = 0; horPos <= 90; horPos++){
-        //Serial.println(horPos);
-        potValue = analogRead(POT);
-        float dist = getDistance(potValue);
-        result = result + verPos + "," + horPos + "," + dist;
-        Serial.println(result);
-        result = "";
-        horServo.write(horPos);
-        delay(250);
+      for (verPos = 0; verPos <= 90; verPos += 3) {
+        verServo.write(verPos);
+        for(int horPos = 0; horPos <= 90; horPos += 3){
+          //Serial.println(horPos);
+          potValue = analogRead(POT);
+          float dist = getDistance(potValue);
+          result = result + verPos + "," + horPos + "," + dist;
+          Serial.println(result);
+          result = "";
+          horServo.write(horPos);
+          delay(250);
+        }
       }
 //      result = result + "Potentiometer reads: " + pot_value + ", " + dist;
 //      Serial.println(result);
